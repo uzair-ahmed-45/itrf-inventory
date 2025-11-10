@@ -12,6 +12,15 @@ const PieChart = ({ data, title }) => {
     const endAngle = currentAngle + angle;
     currentAngle = endAngle;
 
+    // For 100% (full circle), we need to draw it as two 180-degree arcs
+    if (percentage >= 99.9) {
+      return {
+        ...item,
+        path: 'M 50 10 A 40 40 0 1 1 49.99 10 Z',
+        percentage: percentage.toFixed(1)
+      };
+    }
+
     const startRad = (startAngle - 90) * (Math.PI / 180);
     const endRad = (endAngle - 90) * (Math.PI / 180);
 
@@ -29,6 +38,16 @@ const PieChart = ({ data, title }) => {
     };
   });
 
+  if (!data || data.length === 0) {
+    return (
+      <Card title={title} className="h-full">
+        <div className="flex items-center justify-center h-48 text-gray-500">
+          No data available
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card title={title} className="h-full">
       <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -37,7 +56,7 @@ const PieChart = ({ data, title }) => {
           animate={{ scale: 1, rotate: 0 }}
           transition={{ duration: 0.8, type: 'spring' }}
           viewBox="0 0 100 100"
-          className="w-48 h-48"
+          className="w-48 h-48 flex-shrink-0"
         >
           {paths.map((item, index) => (
             <motion.path

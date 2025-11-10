@@ -36,7 +36,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
               <Package className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">Inventory ITRF</h1>
+              <h1 className="text-xl font-bold">ITRF Inventory</h1>
               <p className="text-xs text-blue-200">Equipment Management</p>
             </div>
           </div>
@@ -101,7 +101,7 @@ const Sidebar = ({ isOpen, onClose, onLogout }) => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={onLogout}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 hover:text-white rounded-lg transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-200 hover:text-white rounded-lg transition-colors cursor-pointer"
         >
           <LogOut className="w-4 h-4" />
           <span className="font-medium">Logout</span>

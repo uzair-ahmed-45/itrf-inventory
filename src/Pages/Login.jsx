@@ -1,16 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, LogIn, Server, Database, HardDrive, AlertCircle } from 'lucide-react';
 import { Button, Input } from '../components/ui';
 import { useAuth } from '../Hooks';
+import { authService } from '../services';
 import toast from 'react-hot-toast';
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ username: '', password: '' });
   const [errorMessage, setErrorMessage] = useState('');
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
+
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const checkAuthentication = () => {
+      if (authService.isAuthenticated()) {
+        // User has a valid token, redirect to dashboard
+        toast.success('You are already logged in!');
+        navigate('/dashboard', { replace: true });
+      } else {
+        setIsCheckingAuth(false);
+      }
+    };
+
+    checkAuthentication();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,6 +58,18 @@ const Login = () => {
       toast.error(errorMsg);
     }
   };
+
+  // Show loading while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen w-full flex overflow-hidden">

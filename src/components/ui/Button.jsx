@@ -37,7 +37,7 @@ const Button = ({
         ${sizes[size]} 
         rounded-lg font-medium transition-all duration-200
         disabled:opacity-50 disabled:cursor-not-allowed
-        flex items-center justify-center gap-2
+        flex items-center justify-center gap-2 cursor-pointer
         ${className}
       `}
     >

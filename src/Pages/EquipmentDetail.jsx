@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { 
   ArrowLeft, 
   Edit, 
@@ -8,19 +9,75 @@ import {
   Package,
   Cpu,
   HardDrive,
-  DollarSign,
   Calendar,
   Shield,
   FileText,
   MapPin
 } from 'lucide-react';
 import { Button, Card, Badge } from '../components/ui';
-import { dummyEquipments } from '../data/dummyData';
+import { equipmentService } from '../services';
 
 const EquipmentDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const equipment = dummyEquipments.find(e => e.EquipmentID === parseInt(id));
+  const [equipment, setEquipment] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchEquipment = async () => {
+      try {
+        setLoading(true);
+        const response = await equipmentService.getEquipmentById(id);
+        if (response.success) {
+          setEquipment(response.data);
+        } else {
+          toast.error('Failed to load equipment details');
+        }
+      } catch (error) {
+        console.error('Error fetching equipment:', error);
+        toast.error('Error loading equipment details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEquipment();
+  }, [id]);
+
+  const getStatusVariant = (status) => {
+    switch (status) {
+      case 'OPS': return 'success';
+      case 'UNDER-REPAIR': return 'warning';
+      case 'NON-OPS': return 'danger';
+      case 'BER': return 'danger';
+      default: return 'default';
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this equipment?')) {
+      try {
+        const response = await equipmentService.deleteEquipment(id);
+        if (response.success) {
+          toast.success('Equipment deleted successfully!');
+          navigate('/dashboard/equipments');
+        } else {
+          toast.error(response.message || 'Error deleting equipment');
+        }
+      } catch (error) {
+        console.error('Error deleting equipment:', error);
+        toast.error(error.response?.data?.message || 'Error deleting equipment');
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   if (!equipment) {
     return (
@@ -34,22 +91,6 @@ const EquipmentDetail = () => {
       </div>
     );
   }
-
-  const getStatusVariant = (status) => {
-    switch (status) {
-      case 'Active': return 'success';
-      case 'Under Maintenance': return 'warning';
-      case 'Inactive': return 'danger';
-      default: return 'default';
-    }
-  };
-
-  const handleDelete = () => {
-    if (window.confirm('Are you sure you want to delete this equipment?')) {
-      alert('Equipment deleted successfully!');
-      navigate('/dashboard/equipments');
-    }
-  };
 
   const InfoRow = ({ label, value, icon: Icon }) => (
     <div className="flex items-start gap-3 py-3 border-b border-gray-100 last:border-0">
@@ -106,7 +147,7 @@ const EquipmentDetail = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 text-white"
       >
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <p className="text-blue-100 text-sm mb-1">Status</p>
             <Badge variant={getStatusVariant(equipment.Status)} size="lg">
@@ -119,11 +160,7 @@ const EquipmentDetail = () => {
           </div>
           <div>
             <p className="text-blue-100 text-sm mb-1">Unit/Department</p>
-            <p className="text-xl font-bold">{equipment.Unit}</p>
-          </div>
-          <div>
-            <p className="text-blue-100 text-sm mb-1">Cost</p>
-            <p className="text-xl font-bold">${equipment.Cost.toLocaleString()}</p>
+            <p className="text-xl font-bold">{equipment.UnitName || equipment.Unit}</p>
           </div>
         </div>
       </motion.div>
@@ -132,7 +169,6 @@ const EquipmentDetail = () => {
         {/* Basic Information */}
         <Card title="Basic Information" icon={Package}>
           <div className="space-y-0">
-            <InfoRow label="S.No" value={equipment.SNO} />
             <InfoRow label="Equipment Name" value={equipment.Equipment} />
             <InfoRow label="Serial Number" value={equipment.SerialNo} />
             <InfoRow label="Make/Model" value={equipment.MakeModel} />
@@ -153,7 +189,7 @@ const EquipmentDetail = () => {
         </Card>
 
         {/* Procurement Information */}
-        <Card title="Procurement Information" icon={DollarSign}>
+        <Card title="Procurement Information" icon={Calendar}>
           <div className="space-y-0">
             <InfoRow 
               label="Date of Purchase" 
@@ -162,7 +198,6 @@ const EquipmentDetail = () => {
             />
             <InfoRow label="Source of Procurement" value={equipment.SourceOfProcurement} />
             <InfoRow label="Contract/LPO No & Date" value={equipment.ContractLPONoDate} />
-            <InfoRow label="Cost" value={`$${equipment.Cost.toLocaleString()}`} icon={DollarSign} />
           </div>
         </Card>
 
@@ -194,7 +229,7 @@ const EquipmentDetail = () => {
       </Card>
 
       {/* Activity Timeline (Placeholder for future) */}
-      <Card title="Activity Timeline">
+      {/* <Card title="Activity Timeline">
         <div className="space-y-4">
           {[
             { action: 'Equipment Created', date: equipment.CreatedAt, user: equipment.CreatedByFullName },
@@ -218,7 +253,7 @@ const EquipmentDetail = () => {
             </motion.div>
           ))}
         </div>
-      </Card>
+      </Card> */}
     </div>
   );
 };

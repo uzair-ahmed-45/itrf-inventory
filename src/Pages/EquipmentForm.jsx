@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { 
   Save, 
   ArrowLeft, 
@@ -10,7 +11,7 @@ import {
   FileText
 } from 'lucide-react';
 import { Button, Input, Select, Card } from '../components/ui';
-import { equipmentTypes, statusOptions, units, dummyEquipments } from '../data/dummyData';
+import { equipmentService, unitService, setupService } from '../services';
 
 const EquipmentForm = () => {
   const { id } = useParams();
@@ -18,7 +19,6 @@ const EquipmentForm = () => {
   const isEditMode = !!id;
 
   const [formData, setFormData] = useState({
-    sno: '',
     unit: '',
     equipmentTypeSetupDetailID: '',
     equipment: '',
@@ -33,48 +33,110 @@ const EquipmentForm = () => {
     dateOfPurchase: '',
     sourceOfProcurement: '',
     contractLPONoDate: '',
-    cost: '',
     oemInfo: '',
     localOEMRep: '',
     warrantyExpiryDate: '',
     slaRecDMDetails: '',
-    status: 'Active',
+    status: 'OPS',
     remarks: '',
     referenceNo: ''
   });
 
+  const [units, setUnits] = useState([]);
+  const [equipmentTypes, setEquipmentTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Status options
+  const statusOptions = [
+    { value: 'OPS', label: 'OPS' },
+    { value: 'NON-OPS', label: 'NON-OPS' },
+    { value: 'UNDER-REPAIR', label: 'UNDER-REPAIR' },
+    { value: 'BER', label: 'BER' }
+  ];
+
+  // NIC options
+  const nicOptions = [
+    { value: '', label: 'Select NIC Type' },
+    { value: 'FIXED', label: 'FIXED' },
+    { value: 'EXTENDED', label: 'EXTENDED' }
+  ];
+
+  // Fetch dropdown data
   useEffect(() => {
-    if (isEditMode) {
-      // Load equipment data for editing
-      const equipment = dummyEquipments.find(e => e.EquipmentID === parseInt(id));
-      if (equipment) {
-        setFormData({
-          sno: equipment.SNO || '',
-          unit: equipment.Unit || '',
-          equipmentTypeSetupDetailID: equipment.EquipmentTypeName || '',
-          equipment: equipment.Equipment || '',
-          serialNo: equipment.SerialNo || '',
-          makeModel: equipment.MakeModel || '',
-          processor: equipment.Processor || '',
-          ram: equipment.RAM || '',
-          storage: equipment.Storage || '',
-          opticalDrive: equipment.OpticalDrive || '',
-          nic: equipment.NIC || '',
-          powerSupply: equipment.PowerSupply || '',
-          dateOfPurchase: equipment.DateOfPurchase || '',
-          sourceOfProcurement: equipment.SourceOfProcurement || '',
-          contractLPONoDate: equipment.ContractLPONoDate || '',
-          cost: equipment.Cost || '',
-          oemInfo: equipment.OEMInfo || '',
-          localOEMRep: equipment.LocalOEMRep || '',
-          warrantyExpiryDate: equipment.WarrantyExpiryDate || '',
-          slaRecDMDetails: equipment.SLARecDMDetails || '',
-          status: equipment.Status || 'Active',
-          remarks: equipment.Remarks || '',
-          referenceNo: equipment.ReferenceNo || ''
-        });
+    const fetchDropdownData = async () => {
+      try {
+        setLoading(true);
+
+        // Fetch units
+        const unitsResponse = await unitService.getAllUnits();
+        if (unitsResponse.success) {
+          const unitOptions = unitsResponse.data.map(unit => ({
+            value: unit.UnitID.toString(),
+            label: unit.UnitName
+          }));
+          setUnits(unitOptions);
+        }
+
+        // Fetch equipment types
+        const typesResponse = await setupService.getEquipmentTypes();
+        if (typesResponse.success) {
+          const typeOptions = typesResponse.data.map(type => ({
+            value: type.SetupDetailID.toString(),
+            label: type.SetupDetailName
+          }));
+          setEquipmentTypes(typeOptions);
+        }
+      } catch (error) {
+        console.error('Error fetching dropdown data:', error);
+        toast.error('Failed to load form data');
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchDropdownData();
+  }, []);
+
+  // Fetch equipment data for editing
+  useEffect(() => {
+    const fetchEquipment = async () => {
+      if (isEditMode) {
+        try {
+          const response = await equipmentService.getEquipmentById(id);
+          if (response.success) {
+            const equipment = response.data;
+            setFormData({
+              unit: equipment.Unit || '',
+              equipmentTypeSetupDetailID: equipment.EquipmentTypeSetupDetailID?.toString() || '',
+              equipment: equipment.Equipment || '',
+              serialNo: equipment.SerialNo || '',
+              makeModel: equipment.MakeModel || '',
+              processor: equipment.Processor || '',
+              ram: equipment.RAM || '',
+              storage: equipment.Storage || '',
+              opticalDrive: equipment.OpticalDrive || '',
+              nic: equipment.NIC || '',
+              powerSupply: equipment.PowerSupply || '',
+              dateOfPurchase: equipment.DateOfPurchase ? equipment.DateOfPurchase.split('T')[0] : '',
+              sourceOfProcurement: equipment.SourceOfProcurement || '',
+              contractLPONoDate: equipment.ContractLPONoDate || '',
+              oemInfo: equipment.OEMInfo || '',
+              localOEMRep: equipment.LocalOEMRep || '',
+              warrantyExpiryDate: equipment.WarrantyExpiryDate ? equipment.WarrantyExpiryDate.split('T')[0] : '',
+              slaRecDMDetails: equipment.SLARecDMDetails || '',
+              status: equipment.Status || 'OPS',
+              remarks: equipment.Remarks || '',
+              referenceNo: equipment.ReferenceNo || ''
+            });
+          }
+        } catch (error) {
+          console.error('Error fetching equipment:', error);
+          toast.error('Error loading equipment data');
+        }
+      }
+    };
+
+    fetchEquipment();
   }, [id, isEditMode]);
 
   const handleChange = (e) => {
@@ -85,13 +147,61 @@ const EquipmentForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // In real app, this would call API
-    console.log('Form Data:', formData);
-    alert(isEditMode ? 'Equipment updated successfully!' : 'Equipment added successfully!');
-    navigate('/dashboard/equipments');
+    
+    try {
+      // Prepare data for API
+      const equipmentData = {
+        unit: formData.unit,
+        equipmentTypeSetupDetailID: parseInt(formData.equipmentTypeSetupDetailID),
+        equipment: formData.equipment,
+        serialNo: formData.serialNo || null,
+        makeModel: formData.makeModel || null,
+        processor: formData.processor || null,
+        ram: formData.ram || null,
+        storage: formData.storage || null,
+        opticalDrive: formData.opticalDrive || null,
+        nic: formData.nic || null,
+        powerSupply: formData.powerSupply || null,
+        dateOfPurchase: formData.dateOfPurchase || null,
+        sourceOfProcurement: formData.sourceOfProcurement || null,
+        contractLPONoDate: formData.contractLPONoDate || null,
+        oemInfo: formData.oemInfo || null,
+        localOEMRep: formData.localOEMRep || null,
+        warrantyExpiryDate: formData.warrantyExpiryDate || null,
+        slaRecDMDetails: formData.slaRecDMDetails || null,
+        status: formData.status,
+        remarks: formData.remarks || null,
+        referenceNo: formData.referenceNo || null
+      };
+
+      let response;
+      if (isEditMode) {
+        response = await equipmentService.updateEquipment(id, equipmentData);
+      } else {
+        response = await equipmentService.createEquipment(equipmentData);
+      }
+
+      if (response.success) {
+        toast.success(isEditMode ? 'Equipment updated successfully!' : 'Equipment added successfully!');
+        navigate('/dashboard/equipments');
+      } else {
+        toast.error(response.message || 'Error saving equipment');
+      }
+    } catch (error) {
+      console.error('Error saving equipment:', error);
+      toast.error(error.response?.data?.message || 'Error saving equipment. Please try again.');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -121,13 +231,6 @@ const EquipmentForm = () => {
         {/* Basic Information */}
         <Card title="Basic Information" icon={Package}>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <Input
-              label="S.No"
-              name="sno"
-              value={formData.sno}
-              onChange={handleChange}
-              placeholder="Enter serial number"
-            />
             <Select
               label="Unit/Department"
               name="unit"
@@ -200,12 +303,12 @@ const EquipmentForm = () => {
               onChange={handleChange}
               placeholder="e.g., DVD-RW"
             />
-            <Input
+            <Select
               label="NIC"
               name="nic"
               value={formData.nic}
               onChange={handleChange}
-              placeholder="e.g., Intel I219-LM Gigabit"
+              options={nicOptions}
             />
             <Input
               label="Power Supply"
@@ -240,15 +343,6 @@ const EquipmentForm = () => {
               value={formData.contractLPONoDate}
               onChange={handleChange}
               placeholder="e.g., LPO-2023-001/15-01-2023"
-            />
-            <Input
-              label="Cost"
-              name="cost"
-              type="number"
-              step="0.01"
-              value={formData.cost}
-              onChange={handleChange}
-              placeholder="0.00"
             />
             <Input
               label="Reference Number"

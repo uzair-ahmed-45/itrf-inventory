@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { 
   User, 
   Shield, 
@@ -46,10 +47,10 @@ const Profile = () => {
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert('New passwords do not match!');
+      toast.error('New passwords do not match!');
       return;
     }
-    alert('Password changed successfully!');
+    toast.success('Password changed successfully!');
     setPasswordData({
       currentPassword: '',
       newPassword: '',

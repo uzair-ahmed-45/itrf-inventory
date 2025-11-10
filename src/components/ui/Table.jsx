@@ -36,7 +36,7 @@ const Table = ({ columns, data, onRowClick }) => {
                 transition={{ delay: rowIndex * 0.05 }}
                 onClick={() => onRowClick && onRowClick(row)}
                 className={`
-                  hover:bg-blue-50 transition-colors duration-150
+                  hover:bg-blue-50 text-center transition-colors duration-150
                   ${onRowClick ? 'cursor-pointer' : ''}
                 `}
               >
@@ -44,11 +44,11 @@ const Table = ({ columns, data, onRowClick }) => {
                   <td
                     key={colIndex}
                     style={{ width: column.width || 'auto' }}
-                    className={`px-4 py-3.5 text-sm text-gray-700 align-top ${
+                    className={`px-4 py-3.5  text-sm text-gray-700 align-top ${
                       column.accessor === 'SNO' ? 'font-medium text-center' : ''
                     }`}
                   >
-                    {column.render ? column.render(row) : row[column.accessor]}
+                    {column.render ? column.render(row, rowIndex) : row[column.accessor]}
                   </td>
                 ))}
               </motion.tr>
