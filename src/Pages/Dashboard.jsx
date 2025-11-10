@@ -9,7 +9,7 @@ const Dashboard = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome back! Here's your equipment overview</p>
+          {/* <p className="text-gray-600 mt-1">Welcome back! Here's your equipment overview</p> */}
         </div>
         <div className="flex items-center gap-2 text-sm text-gray-600">
           <Calendar className="w-4 h-4" />
@@ -23,7 +23,7 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <StatCard
           icon={Package}
           title="Total Equipment"
@@ -48,14 +48,14 @@ const Dashboard = () => {
           trend={-15.3}
           color="yellow"
         />
-        <StatCard
+        {/* <StatCard
           icon={DollarSign}
           title="Total Value"
           value={`$${dashboardStats.totalValue.toLocaleString()}`}
           subtitle="Asset valuation"
           trend={5.7}
           color="purple"
-        />
+        /> */}
       </div>
 
       {/* Charts Row */}

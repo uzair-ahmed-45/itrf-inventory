@@ -128,7 +128,7 @@ const Login = () => {
             </div>
 
             <h1 className="text-5xl font-bold mb-6">
-              Inventory ITRF
+              ITRF Inventory
             </h1>
             <p className="text-xl text-blue-200 mb-8 max-w-md">
               Comprehensive IT Resource & Facilities Management System
@@ -139,7 +139,6 @@ const Login = () => {
               {[
                 'Track and manage all equipment',
                 'Real-time inventory monitoring',
-                'Warranty and maintenance tracking',
                 'Advanced reporting and analytics'
               ].map((feature, index) => (
                 <motion.div
@@ -180,7 +179,7 @@ const Login = () => {
           {/* Welcome Text */}
           <div className="mb-8">
             <h2 className="text-3xl font-bold text-gray-800 mb-2">
-              Welcome Back
+              Welcome
             </h2>
             <p className="text-gray-600">
               Please sign in to your account to continue
@@ -272,7 +271,7 @@ const Login = () => {
           </form>
 
           {/* Footer */}
-          <motion.div
+          {/* <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6 }}
@@ -284,16 +283,16 @@ const Login = () => {
                 Contact Administrator
               </a>
             </p>
-          </motion.div>
+          </motion.div> */}
 
           {/* Additional Info */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.7 }}
-            className="mt-12 pt-8 border-t border-gray-200 text-center text-xs text-gray-500"
+            className="mt-12 pt-8 text-center text-xs text-gray-500"
           >
-            <p>© 2024 Inventory ITRF. All rights reserved.</p>
+            <p>© 2025 ITRF Inventory. All rights reserved.</p>
           </motion.div>
         </motion.div>
       </div>
