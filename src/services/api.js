@@ -1,9 +1,18 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
+// Get API URL from runtime config or environment variable
+const getApiUrl = () => {
+  // Priority: Runtime config (for production) > Environment variable (for development) > Default
+  if (window.APP_CONFIG && window.APP_CONFIG.API_URL) {
+    return window.APP_CONFIG.API_URL;
+  }
+  return import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+};
+
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Update this if your backend runs on a different port
+  baseURL: getApiUrl(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

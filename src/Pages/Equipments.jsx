@@ -24,6 +24,7 @@ const Equipments = () => {
   const [equipmentTypes, setEquipmentTypes] = useState([]);
   const [commands, setCommands] = useState([]);
   const [units, setUnits] = useState([]);
+  const [commandUnitIds, setCommandUnitIds] = useState([]); // Track unit IDs for selected command
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -116,13 +117,18 @@ const Equipments = () => {
             }))
           ];
           setUnits(unitOptions);
+          
+          // Store the unit IDs for filtering equipment by command
+          const unitIds = unitsResponse.data.map(unit => unit.UnitID.toString());
+          setCommandUnitIds(unitIds);
         }
       } catch (error) {
         console.error('Error fetching units by command:', error);
         toast.error('Error loading units');
       }
     } else {
-      // If no command selected, fetch all units
+      // If no command selected, fetch all units and clear command unit IDs
+      setCommandUnitIds([]);
       try {
         const unitsResponse = await unitService.getAllUnits();
         if (unitsResponse.success) {
@@ -150,9 +156,16 @@ const Equipments = () => {
 
     const matchesType = !filterType || equipment.EquipmentTypeName === filterType;
     const matchesStatus = !filterStatus || equipment.Status === filterStatus;
-    const matchesUnit = !filterUnit || equipment.Unit === filterUnit;
+    
+    // Command filter: if a command is selected, check if equipment's unit is in the command's units
+    const matchesCommand = !filterCommand || 
+      (equipment.Unit && commandUnitIds.includes(equipment.Unit.toString()));
+    
+    // Unit filter: if a specific unit is selected, match that unit exactly
+    const matchesUnit = !filterUnit || 
+      (equipment.Unit && equipment.Unit.toString() === filterUnit);
 
-    return matchesSearch && matchesType && matchesStatus && matchesUnit;
+    return matchesSearch && matchesType && matchesStatus && matchesCommand && matchesUnit;
   });
 
   // Pagination logic
@@ -373,6 +386,7 @@ const Equipments = () => {
                 setFilterCommand('');
                 setFilterStatus('');
                 setFilterUnit('');
+                setCommandUnitIds([]); // Clear command unit IDs
                 setCurrentPage(1);
 
                 // Reload all units when clearing filters

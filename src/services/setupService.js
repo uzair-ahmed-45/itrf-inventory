@@ -23,10 +23,10 @@ const setupService = {
     }
   },
 
-  // Get equipment types (assuming SMSID = 1 for EquipmentTypes)
+  // Get equipment types (SMSID = 2 for EquipmentTypes)
   getEquipmentTypes: async () => {
     try {
-      const response = await api.get('/setup-details/sms/1');
+      const response = await api.get('/setup-details/sms/2');
       return response.data;
     } catch (error) {
       console.error('Error fetching equipment types:', error);

@@ -1,0 +1,20 @@
+===============================================
+ENVIRONMENT FILE SETUP INSTRUCTIONS
+===============================================
+
+Create a file named ".env" in the inventoryitrf folder with the following content:
+
+# Development Environment Configuration
+VITE_API_URL=http://localhost:5000/api
+
+===============================================
+
+OPTIONAL: For production-specific configuration, create ".env.production":
+
+# Production Environment Configuration
+VITE_API_URL=http://localhost:5000/api
+
+===============================================
+
+Note: After building, you can edit dist/config.js to change the API URL without rebuilding.
+
