@@ -79,6 +79,7 @@ const EquipmentForm = () => {
 
         // Fetch equipment types
         const typesResponse = await setupService.getEquipmentTypes();
+        console.log("Equipment Types:", typesResponse);
         if (typesResponse.success) {
           const typeOptions = typesResponse.data.map(type => ({
             value: type.SetupDetailID.toString(),
