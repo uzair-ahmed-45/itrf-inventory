@@ -11,12 +11,12 @@ const Button = ({
   icon: Icon
 }) => {
   const variants = {
-    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500/50',
-    secondary: 'bg-gray-600 hover:bg-gray-700 text-white shadow-lg shadow-gray-500/50',
-    success: 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500/50',
-    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500/50',
-    outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50',
-    ghost: 'text-gray-700 hover:bg-gray-100'
+    primary: 'bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-500\/50',
+    secondary: 'bg-gray-600 hover:bg-gray-700 text-white shadow-lg shadow-gray-500\/50',
+    success: 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-500\/50',
+    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-500\/50',
+    outline: 'border-2 border-blue-600 text-blue-600 hover:bg-blue-50 bg-transparent',
+    ghost: 'text-gray-700 hover:bg-gray-100 bg-transparent'
   };
 
   const sizes = {
@@ -25,6 +25,11 @@ const Button = ({
     lg: 'px-6 py-3 text-lg'
   };
 
+  // Only remove border for non-outline variants
+  const buttonStyle = variant === 'outline' 
+    ? { outline: 'none' } 
+    : { border: 'none', outline: 'none' };
+
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
@@ -32,6 +37,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      style={buttonStyle}
       className={`
         ${variants[variant]} 
         ${sizes[size]} 

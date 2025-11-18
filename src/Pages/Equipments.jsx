@@ -244,6 +244,7 @@ const Equipments = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate(`/dashboard/equipments/${row.EquipmentID}`)}
             className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
+            style={{ border: 'none', outline: 'none' }}
             title="View"
           >
             <Eye className="w-4 h-4" />
@@ -253,6 +254,7 @@ const Equipments = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => navigate(`/dashboard/equipments/edit/${row.EquipmentID}`)}
             className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+            style={{ border: 'none', outline: 'none' }}
             title="Edit"
           >
             <Edit className="w-4 h-4" />
@@ -262,6 +264,7 @@ const Equipments = () => {
             whileTap={{ scale: 0.9 }}
             onClick={() => handleDelete(row.EquipmentID)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+            style={{ border: 'none', outline: 'none' }}
             title="Delete"
           >
             <Trash2 className="w-4 h-4" />
@@ -441,7 +444,7 @@ const Equipments = () => {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 py-1.5 text-sm border-none rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Previous
                   </button>
@@ -459,9 +462,9 @@ const Equipments = () => {
                           <button
                             key={pageNumber}
                             onClick={() => handlePageChange(pageNumber)}
-                            className={`px-3 py-1.5 text-sm border rounded-md transition-colors ${currentPage === pageNumber
-                                ? 'bg-blue-600 text-white border-blue-600'
-                                : 'border-gray-300 hover:bg-gray-50'
+                            className={`px-3 py-1.5 text-sm border-none rounded-md transition-colors ${currentPage === pageNumber
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-100 hover:bg-gray-200'
                               }`}
                           >
                             {pageNumber}
@@ -480,7 +483,7 @@ const Equipments = () => {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="px-3 py-1.5 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-3 py-1.5 text-sm border-none rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     Next
                   </button>

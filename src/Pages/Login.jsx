@@ -104,7 +104,7 @@ const Login = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
+        <div className="relative z-10 flex flex-col items-center justify-center items-center w-full p-12 text-white">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -122,7 +122,7 @@ const Login = () => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
+                className="p-6 bg-white\/10 backdrop-blur-lg rounded-2xl border border-white\/20"
               >
                 <Server className="w-16 h-16" />
               </motion.div>
@@ -136,7 +136,7 @@ const Login = () => {
                   delay: 0.5,
                   ease: "easeInOut"
                 }}
-                className="p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
+                className="p-6 bg-white\/10 backdrop-blur-lg rounded-2xl border border-white\/20"
               >
                 <Database className="w-16 h-16" />
               </motion.div>
@@ -150,7 +150,7 @@ const Login = () => {
                   delay: 1,
                   ease: "easeInOut"
                 }}
-                className="p-6 bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20"
+                className="p-6 bg-white\/10 backdrop-blur-lg rounded-2xl border border-white\/20"
               >
                 <HardDrive className="w-16 h-16" />
               </motion.div>

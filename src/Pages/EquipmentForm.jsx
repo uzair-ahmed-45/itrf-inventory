@@ -409,7 +409,7 @@ const EquipmentForm = () => {
                 value={formData.remarks}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                className="w-full px-4 py-2.5 border-none rounded-lg bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-200"
                 placeholder="Enter any additional remarks or notes..."
               />
             </div>

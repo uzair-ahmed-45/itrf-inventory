@@ -44,7 +44,7 @@ const Table = ({ columns, data, onRowClick }) => {
                   <td
                     key={colIndex}
                     style={{ width: column.width || 'auto' }}
-                    className={`px-4 py-3.5  text-sm text-gray-700 align-top ${
+                    className={`px-4 py-3.5 text-sm text-gray-700 align-top ${
                       column.accessor === 'SNO' ? 'font-medium text-center' : ''
                     }`}
                   >
